@@ -1,3 +1,5 @@
+import settings from './settings.json' with { type: 'json' };
+
 const receiptForm = document.getElementById('receiptForm');
 
 // အရင်က ရေးခဲ့တဲ့ Form submit event ထဲမှာ ပြင်ပါမယ်
@@ -13,7 +15,7 @@ receiptForm.addEventListener('submit', async (e) => {
 
     try {
         // ၁။ Firebase ထဲ သိမ်းမယ်
-        const docRef = await window.addDoc(window.collection(window.db, "receipts"), {
+        const docRef = await window.addDoc(window.collection(window.db, settings.db_name), {
             studentName: studentName,
             course: course,
             duration: Number(duration),

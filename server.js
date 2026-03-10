@@ -1,7 +1,7 @@
 
 // Firebase App နဲ့ Firestore အတွက် လိုအပ်တဲ့ functions တွေကို import လုပ်ပါ
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 // သင့်ရဲ့ Firebase Config ကို ဒီမှာ အစားထိုးပါ (အဆင့် ၁ က ရခဲ့တဲ့ code)
 const firebaseConfig = {
     apiKey: "AIzaSyBO39cNFvH_I0Iba2rZM66FpVa622XKYkA",
@@ -27,3 +27,5 @@ window.orderBy = orderBy;
 window.serverTimestamp = serverTimestamp;
 window.doc = doc;
 window.getDoc = getDoc;
+window.deleteDoc = deleteDoc;
+window.updateDoc = updateDoc;

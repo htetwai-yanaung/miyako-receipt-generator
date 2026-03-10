@@ -23,7 +23,7 @@
                 <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/></svg>
             </button>
             <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-                <ul class="font-medium flex flex-col p-1 md:p-0 mt-4 border border-gray-300 rounded-md bg-gray-200 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
+                <ul class="font-medium flex flex-col p-1 md:p-0 mt-4 border border-gray-300 rounded-md md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary">
                 <li>
                     <a href="index.html" class="block py-2 px-3 text-indigo-500 rounded-md md:bg-transparent md:text-fg-brand md:p-0 " aria-current="page">Home</a>
                 </li>
@@ -36,10 +36,11 @@
     </nav>
 
     <div class="mt-20 p-6">
-        <div class="mb-6">
+        <div class="mb-6 flex items-center justify-between">
             <a href="history.html" class="font-medium rounded-md text-sm px-4 py-2.5 text-center leading-5 bg-gray-500 text-white">Back</a>
+            <button id="edit-btn" class="font-medium rounded-md text-sm px-4 py-2.5 text-center leading-5 bg-blue-500 text-white">Edit</button>
         </div>
-        <div id="receipt-template" class="bg-white p-6 flex flex-col gap-3 max-w-[1080px]">
+        <div id="receipt-template" class="bg-white p-6 flex flex-col gap-3 ">
             <div class="flex flex-col justify-center items-center gap-3">
                 <img src="./logo.png" alt="Logo" class="w-30 h-30">
                 <h2 class="text-xl font-bold">RECEIPT</h2>
@@ -73,8 +74,8 @@
             <hr class="border-dashed">
             <div class="flex flex-col self-end">
                 <div class="flex flex-col items-center">
-                    <span class="text-gray-800 font-semibold">Sensei</span>
-                    <span class="text-gray-800 font-semibold underline decoration-dashed underline-offset-8">Yu Yu Kyaw</span>
+                    <span class="text-gray-800 font-semibold">Received By</span>
+                    <span class="text-gray-800 font-semibold underline decoration-dashed underline-offset-8">Miyako</span>
                 </div>
             </div>
         </div>

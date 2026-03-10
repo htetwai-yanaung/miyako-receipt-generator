@@ -1,8 +1,15 @@
-
+import settings from './settings.json' with { type: 'json' };
 
 // ၁။ URL ကနေ ID ကို ဖတ်မယ်
 const params = new URLSearchParams(window.location.search);
 const receiptId = params.get('id');
+
+
+
+const editBtn = document.getElementById("edit-btn");
+editBtn.addEventListener('click', () => {
+    window.location = `edit.html?id=${receiptId}`
+})
 
 if (receiptId) {
     fetchReceiptData(receiptId);
@@ -10,7 +17,7 @@ if (receiptId) {
 
 // ၂။ Firebase ကနေ Data Fetch မယ့် Function
 async function fetchReceiptData(id) {
-    const docRef = doc(db, "receipts", id);
+    const docRef = doc(db, settings.db_name, id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
