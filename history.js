@@ -1,8 +1,13 @@
-const historyBody = document.getElementById('history-body');
-const loadBtn = document.getElementById('load-history');
 import settings from './settings.json' with { type: 'json' };
 
-async function fetchHistory() {
+const historyBody = document.getElementById('history-body');
+const loadBtn = document.getElementById('load-history');
+const monthFilterInput = document.getElementById('month-filter');
+const totalAmountDisplay = document.getElementById('total-received-amount');
+
+let allHistoryData = []; // Database က Data တွေ ယာယီသိမ်းထားဖို့
+
+async function fetchHistory2() {
     historyBody.innerHTML = "Loading...";
     try {
         // အချိန်အလိုက် နောက်ဆုံးရောင်းရငွေကို ထိပ်ဆုံးက ထားမယ် (desc)
@@ -62,6 +67,89 @@ function showReceipt(name, receivedAmount, date, id) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+async function fetchHistory() {
+    historyBody.innerHTML = "<tr><td colspan='7' class='px-6 py-4 text-center'>Loading...</td></tr>";
+    try {
+        const q = window.query(window.collection(window.db, settings.db_name), window.orderBy("date", "desc"));
+        const querySnapshot = await window.getDocs(q);
+        
+        allHistoryData = []; // အဟောင်းတွေဖျက်ပြီး အသစ်ပြန်ထည့်မယ်
+
+        querySnapshot.forEach((doc) => {
+            allHistoryData.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+
+        // Data ရလာပြီဆိုရင် Table ကို စဆွဲပါမယ်
+        renderTable();
+
+    } catch (e) {
+        console.error(e);
+        historyBody.innerHTML = "<tr><td colspan='7' class='px-6 py-4 text-center text-red-500'>Error loading data!</td></tr>";
+    }
+}
+
+function renderTable() {
+    historyBody.innerHTML = ""; 
+    let totalReceived = 0; // Total တွက်ဖို့
+    const selectedMonth = monthFilterInput.value; // format: "YYYY-MM" (eg. "2023-10")
+
+    allHistoryData.forEach((data) => {
+        let rowDateObj = data.date?.toDate ? data.date.toDate() : null;
+        let showRow = true;
+
+        // Filter လအလိုက် စစ်ထုတ်ခြင်း
+        if (selectedMonth && rowDateObj) {
+            const year = rowDateObj.getFullYear();
+            // လကို 2 digit ဖြစ်အောင် padStart သုံးပါတယ် (01, 02, etc.)
+            const month = String(rowDateObj.getMonth() + 1).padStart(2, '0');
+            const rowMonthStr = `${year}-${month}`; // "2023-10" ပုံစံဖြစ်သွားအောင်ပါ
+            
+            if (rowMonthStr !== selectedMonth) {
+                showRow = false; // ရွေးထားတဲ့လနဲ့ မတူရင် မပြဘူး
+            }
+        }
+
+        // ပြရမယ့် Row တွေကိုပဲ Table ထဲထည့်မယ်၊ Total ပေါင်းမယ်
+        if (showRow) {
+            const displayDate = rowDateObj ? rowDateObj.toLocaleDateString() : "N/A";
+            
+            // Total amount ထဲကို ပေါင်းထည့်မယ်
+            const amount = Number(data.receivedAmount) || 0;
+            totalReceived += amount;
+
+            const tr = document.createElement('tr');
+            tr.style.background = "white";
+            tr.classList.add('border-b', 'hover:bg-gray-50'); // UI နည်းနည်းပြင်ထားပါတယ်
+            tr.innerHTML = `
+                <td class="px-6 py-4">${displayDate}</td>
+                <td class="px-6 py-4 text-nowrap">${data.studentName}</td>
+                <td class="px-6 py-4">${data.course}</td>
+                <td class="px-6 py-4">${data.duration}</td>
+                <td class="px-6 py-4">${Number(data.totalFee || 0).toLocaleString()}</td>
+                <td class="px-6 py-4">${amount.toLocaleString()}</td>
+                <td class="px-6 py-4">
+                    <a href="template.html?id=${data.id}" class="edit-btn bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded mr-2" >Print</a>
+                    <button class="delete-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded" data-id="${data.id}">Delete</button>
+                </td>
+            `;
+            
+            historyBody.appendChild(tr);
+        }
+    });
+
+    // Total Amount ကို UI မှာ သွားပြပါမယ်
+    totalAmountDisplay.innerText = totalReceived.toLocaleString();
+}
+
+// ခလုတ်နှိပ်ရင် history ပြန်ယူမယ်
+loadBtn.addEventListener('click', fetchHistory);
+
+// Filter မှာ လ ရွေးလိုက်ရင် Table ကို အသစ်ပြန်ဆွဲမယ်
+monthFilterInput.addEventListener('change', renderTable);
+
 // ခလုတ်နှိပ်ရင် history ပြန်ယူမယ်
 loadBtn.addEventListener('click', fetchHistory);
 
@@ -85,17 +173,25 @@ historyBody.addEventListener('click', async (event) => {
 });
 
 async function deleteRow(id, rowElement) {
+    // Delete Button လေးကို ဖျက်နေတုန်း Disable လုပ်ထားမယ်
+    const deleteBtn = rowElement.querySelector('.delete-btn');
+    deleteBtn.innerText = "Deleting...";
+    deleteBtn.disabled = true;
+
     try {
-        // 1. Delete from Firebase
         const docRef = window.doc(window.db, settings.db_name, id);
         await window.deleteDoc(docRef);
         
-        // 2. Remove from the HTML Table
-        rowElement.remove();
+        // ဖျက်လို့အောင်မြင်ရင် Local Array ထဲကနေပါ ဖယ်ထုတ်လိုက်မယ်
+        allHistoryData = allHistoryData.filter(item => item.id !== id);
         
-        // alert("Deleted successfully!");
+        // Table နဲ့ Total ကို အသစ်ပြန် Update လုပ်မယ်
+        renderTable(); 
+        
     } catch (error) {
         console.error("Error deleting document: ", error);
         alert("Failed to delete.");
+        deleteBtn.innerText = "Delete";
+        deleteBtn.disabled = false;
     }
 }

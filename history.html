@@ -39,7 +39,24 @@
     
 
     <div class="mt-20 p-6 w-full">
-        <button id="load-history" class="mb-6 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-md text-sm px-4 py-2.5 text-center leading-5">Refresh</button>
+        <!-- <button id="load-history" class="mb-6 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-md text-sm px-4 py-2.5 text-center leading-5">Refresh</button> -->
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <!-- Refresh Button -->
+            <button id="load-history" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-md text-sm px-4 py-2.5 text-center leading-5">
+                Refresh
+            </button>
+        
+            <!-- Filter & Total Display -->
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Month Filter (ဥပမာ - October 2023) -->
+                <input type="month" id="month-filter" class="bg-gray-50 border border-gray-300 text-body text-sm rounded-md focus:ring-indigo-500 focus:border-indigo-500 block p-2" />
+                
+                <!-- Total Amount -->
+                <div class="bg-indigo-50 text-indigo-600 font-medium px-4 py-2 rounded-md border border-indigo-200">
+                    Total Received: <span id="total-received-amount" class="font-bold text-lg">0</span> MMK
+                </div>
+            </div>
+        </div>
 
         <div class="relative overflow-x-auto bg-gray-200 shadow-xs rounded-md border border-gray-200">
             <table class="w-full text-sm text-left rtl:text-right text-body">
@@ -63,7 +80,7 @@
                         <th scope="col" class="px-6 py-3 font-medium">
                             Received
                         </th>
-                        <th scope="col" class="px-6 py-3 font-medium min-w-40">
+                        <th scope="col" class="px-6 py-3 font-medium min-w-50">
                             Action
                         </th>
                     </tr>
